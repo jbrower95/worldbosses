@@ -212,13 +212,16 @@ export class Bot {
         });
         this.client.on('guildCreate', async (guild: Guild) => {
             log.info(`[${guild.name}] new guild!`);
-            await this.db.updateGuild(guild.id, {
+            const guildModel = {
                 guildId: guild.id,
                 worldBossFoundMessage: DEFAULT_BOSS_MESSAGE,
                 worldBossRespawnMessage: DEFAULT_RESPAWN_MESSAGE,
                 worldBossNotificationChannel: "",
                 layerRespawnNotifications: true,
-            })
+            }
+            await this.db.updateGuild(guild.id, guildModel)
+            this.guilds.push(guildModel);
+            await this.registerCommands();
         })
        this.client.on('interactionCreate', async (interaction) => {
             if (interaction.isButton()) {
