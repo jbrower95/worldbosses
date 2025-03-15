@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "bun run src/index.ts",
-    "test": "npm test"
+    "test": "npm test",
+    "logs": "heroku logs --tail --app world-bosses"
   },
   "author": "",
   "license": "ISC",
