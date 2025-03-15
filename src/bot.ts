@@ -51,7 +51,11 @@ export class Bot {
     
     async findOrPostScoutingMessages() {
         for (const guild of this.guilds) {
-            await this.initializeGuild(guild.guildId, guild.worldBossNotificationChannel);
+            try {
+                await this.initializeGuild(guild.guildId, guild.worldBossNotificationChannel);
+            } catch (e) {
+                log.error("failed to initialize guild", {guild: guild.guildId, error: e});
+            }
         }
     }
 
