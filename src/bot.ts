@@ -44,7 +44,11 @@ export class Bot {
     async registerCommands() {
         const rest = new REST({ version: '10' }).setToken(TOKEN);
         for (const guild of this.guilds) {
-            await rest.put(Routes.applicationGuildCommands(CLIENT_ID, guild.guildId), { body: commands });
+            try {
+                await rest.put(Routes.applicationGuildCommands(CLIENT_ID, guild.guildId), { body: commands });
+            } catch (e) {
+                log.error("failed to register commands for guild", {guild: guild.guildId});
+            }
         }
         log.info('/slash commands registered');
     }
