@@ -116,7 +116,11 @@ export class Bot {
             if (existingMessage) {
                 log.info(`found existing post for ${boss.name}`, {guildId: channel.guild.id, guild: channel.guild.name})
                 bossData[boss.id].messageId = existingMessage.id;
-                await existingMessage.pin();
+                try {
+                    await existingMessage.pin();
+                } catch (e) {
+                    log.error(`failed to pin message`, {guild: guildId, error: e});
+                }
             } else {
                 log.info(`creating post for ${boss.name}`, {guildId: channel.guild.id, guild: channel.guild.name})
                 const message = await channel.send({ content: formatBossStatus(this.bossData[guildId][boss.id]), components: createActionRow(boss) });
@@ -150,7 +154,11 @@ export class Bot {
                     try {
                         const message = await channel.messages.fetch(bossInfo.messageId);
                         await message.edit({ content: formatBossStatus(bossInfo), components: createActionRow(bossInfo) });
-                        await message.pin();
+                        try {
+                            await message.pin();
+                        } catch (e) {
+                            log.error(`failed to pin messsage`, {guildId, boss: boss.id});
+                        }
                     } catch (error) {
                         log.error(`Failed to update scouting message for ${boss}:`, error);
                     }
