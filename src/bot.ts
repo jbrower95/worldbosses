@@ -121,7 +121,11 @@ export class Bot {
                 log.info(`creating post for ${boss.name}`, {guildId: channel.guild.id, guild: channel.guild.name})
                 const message = await channel.send({ content: formatBossStatus(this.bossData[guildId][boss.id]), components: createActionRow(boss) });
                 bossData[boss.id].messageId = message.id;
-                await message.pin();
+                try {
+                    await message.pin();
+                } catch (e){
+                    log.error(`failed to pin message`, {guild: guildId, error: e});
+                }
             }
         }
     }
