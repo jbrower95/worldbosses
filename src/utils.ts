@@ -21,10 +21,15 @@ export const emptyBossData = () => {
     }, {} as Record<string, BossData>);
 }
 
-export function formatBossStatus(boss: BossData) {
+export function formatBossStatus(boss: BossData, numLayers: number) {
+    const layers = boss.layers.filter(layer => {
+        return parseInt(layer.layer.split(/\s+/)[1]) <= numLayers;
+    })
+
     return [
-        `# ${boss.name} Scouting Report`,
-        ...boss.layers.map(l => {
+        `# ${boss.name} Scouting Report (showing ${numLayers}/${boss.layers.length} layers)`,
+
+        ...layers.map(l => {
             if (l.status === 'alive') {
                 return `- **${l.layer}:** 👿 **Alive**`;
             } else if (l.status === 'dead') {

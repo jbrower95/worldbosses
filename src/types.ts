@@ -23,7 +23,7 @@ type TLayerId = string;
 
 export interface IDatabase {
     // guilds
-    allGuilds(): Promise<IGuild[]>;
+    allGuilds(): Promise<Record<string, IGuild>>;
     guildById(id: string): Promise<IGuild | undefined>;
     updateGuild(id: string, guild: IGuild): Promise<void>;
     
@@ -49,6 +49,17 @@ export type TBossId = "kazzy" | "azzy";
 
 export type IBossReport = Record<TBossId, BossData>;
 
+export function copyGuild(guild: IGuild): IGuild {
+    return {
+        guildId: guild.guildId,
+        worldBossFoundMessage: guild.worldBossFoundMessage,
+        worldBossRespawnMessage: guild.worldBossRespawnMessage,
+        worldBossNotificationChannel: guild.worldBossNotificationChannel,
+        layerRespawnNotifications: guild.layerRespawnNotifications,
+        numLayers: guild.numLayers
+    };
+}
+
 export interface IGuild {
     guildId: string,
 
@@ -56,6 +67,7 @@ export interface IGuild {
     worldBossRespawnMessage: string,
     worldBossNotificationChannel: string,
     layerRespawnNotifications: boolean,
+    numLayers: number;
 }
 
 export interface IScoutReport {

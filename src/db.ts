@@ -1,5 +1,6 @@
 import { Collection, Db, Document, MongoClient, ObjectId } from "mongodb";
 import { IDatabase, IGuild, IScoutReport, BossData, IBossReport } from "./types"; // Adjust path as needed
+import { log } from "./log";
 
 export class Database implements IDatabase {
     constructor(
@@ -8,12 +9,18 @@ export class Database implements IDatabase {
         private reports: Collection<IScoutReport> // Collection for scout reports
     ) {}
 
-    async allGuilds(): Promise<IGuild[]> {
+    async allGuilds(): Promise<Record<string, IGuild>> {
         const res: IGuild[] = [];
         for await (const doc of this.guilds.find()) {
             res.push(doc);
         }
-        return res;
+
+        const output: Record<string, IGuild> = {};
+        res.forEach(guild => {
+            output[guild.guildId] = guild;
+        })
+
+        return output;
     }
 
     async totalKillsForGuild(): Promise<Record<string, number>> {
@@ -40,6 +47,7 @@ export class Database implements IDatabase {
     }
 
     async updateGuild(id: string, guild: IGuild): Promise<void> {
+        log.info(`Updating guild(${id}) = ${JSON.stringify(guild, null, 2)}`)
         await this.guilds.updateOne(
             { guildId: id },
             { $set: guild },
